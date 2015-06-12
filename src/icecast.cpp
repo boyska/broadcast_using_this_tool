@@ -99,7 +99,7 @@ int ic_connect(void)
         {
             // Try PUT method first. Supported since icecast 2.4.0
             if(cfg.srv[cfg.selected_srv]->mount[0] != '/')
-                snprintf(send_buf, sizeof(send_buf), "PUT /%s HTTP/1.1\r\n", 
+                snprintf(send_buf, sizeof(send_buf), "PUT /%s HTTP/1.1\r\n",
                         cfg.srv[cfg.selected_srv]->mount);
             else
                 snprintf(send_buf, sizeof(send_buf), "PUT %s HTTP/1.1\r\n",
@@ -109,7 +109,7 @@ int ic_connect(void)
         {
 
             if(cfg.srv[cfg.selected_srv]->mount[0] != '/')
-                snprintf(send_buf, sizeof(send_buf), "SOURCE /%s HTTP/1.0\r\n", 
+                snprintf(send_buf, sizeof(send_buf), "SOURCE /%s HTTP/1.0\r\n",
                         cfg.srv[cfg.selected_srv]->mount);
             else
                 snprintf(send_buf, sizeof(send_buf), "SOURCE %s HTTP/1.0\r\n",
@@ -124,6 +124,9 @@ int ic_connect(void)
         sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
 
         snprintf(send_buf, sizeof(send_buf), "User-Agent: %s\r\n", PACKAGE_STRING);
+        sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
+
+        snprintf(send_buf, sizeof(send_buf), "Hostname: %s:%s\r\n", cfg.srv[cfg.selected_srv]->addr, cfg.srv[cfg.selected_srv]->port);
         sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
 
         if(!strcmp(cfg.audio.codec, "mp3"))
@@ -159,8 +162,8 @@ int ic_connect(void)
         }
 
 
-        // Send audio settings 
-        snprintf(send_buf, sizeof(send_buf), 
+        // Send audio settings
+        snprintf(send_buf, sizeof(send_buf),
                 "ice-audio-info: "
                 "ice-bitrate=%d;"
                 "ice-channels=%d;"
@@ -214,12 +217,12 @@ int ic_connect(void)
                     return 2;
                     break;
                 case 403:   //mountpoint already in use
-                    usleep(100000); 
+                    usleep(100000);
                     ic_disconnect();
                     return 1;
                     break;
                 default:
-                    usleep(100000); 
+                    usleep(100000);
                     ic_disconnect();
                     return 1;
             }
@@ -243,8 +246,8 @@ int ic_connect(void)
                 return 2;
             }
         }
-            
-        
+
+
         break;
     }
 
