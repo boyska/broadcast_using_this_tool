@@ -122,6 +122,11 @@ int ic_connect(void)
         snprintf(b64_auth, sizeof(b64_auth), "%s", util_base64_enc(auth));
         snprintf(send_buf, sizeof(send_buf), "Authorization: Basic %s\r\n", b64_auth);
         sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
+        if(cfg.srv[cfg.selected_srv]->port == 80)
+            snprintf(send_buf, sizeof(send_buf), "Host: %s\r\n", cfg.srv[cfg.selected_srv]->addr);
+        else
+            snprintf(send_buf, sizeof(send_buf), "Host: %s:%s\r\n", cfg.srv[cfg.selected_srv]->addr, cfg.srv[cfg.selected_srv]->port);
+        sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
 
         snprintf(send_buf, sizeof(send_buf), "User-Agent: %s\r\n", PACKAGE_STRING);
         sock_send(&stream_socket, send_buf, strlen(send_buf), SEND_TIMEOUT);
